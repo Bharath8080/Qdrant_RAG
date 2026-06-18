@@ -1,0 +1,8 @@
+streamlit
+qdrant-client[fastembed]
+fastembed
+PyPDF2
+groq
+python-dotenv
+pyyaml
+pymupdf
