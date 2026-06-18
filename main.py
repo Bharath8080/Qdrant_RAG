@@ -89,8 +89,15 @@ if process_button and uploaded_files:
     progress_bar = st.progress(0)
     status_text = st.empty()
 
+    import datetime
+    import os
+
     for i, uploaded_file in enumerate(uploaded_files):
-        status_text.text(f"Processing: {uploaded_file.name}...")
+        base_name, ext = os.path.splitext(uploaded_file.name)
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        unique_filename = f"{base_name}_{timestamp}_{i}{ext}"
+
+        status_text.text(f"Processing: {unique_filename}...")
         raw_text = load_pdf(uploaded_file)
 
         if not raw_text.strip():
@@ -103,7 +110,7 @@ if process_button and uploaded_files:
             overlap=config["chunk_overlap"],
         )
         embedded_chunks = embedder.embed_chunks(chunks)
-        vector_store.store_chunks(embedded_chunks=embedded_chunks, source_filename=uploaded_file.name)
+        vector_store.store_chunks(embedded_chunks=embedded_chunks, source_filename=unique_filename)
         progress_bar.progress((i + 1) / len(uploaded_files))
 
     status_text.text("")
